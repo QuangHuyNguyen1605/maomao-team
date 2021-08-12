@@ -15,7 +15,7 @@ export class GenerateTeamsButtonComponent implements OnInit {
 
   onClick() {
     while (members.length > 0) {
-      let randomId = Math.floor(Math.random() * members.length) + 1;
+      const randomId = Math.floor(Math.random() * members.length) + 1;
       if (this.team1.length <= 5) {
         let numOfFemale = this.team1.filter(mem => mem.gender === 'female')
           .length;
@@ -25,6 +25,11 @@ export class GenerateTeamsButtonComponent implements OnInit {
           this.team1.push(members[randomId]);
         }
       }
+      members.forEach((mem, idx) => {
+        if (mem.id === randomId) {
+          members.splice(idx, 1);
+        }
+      });
     }
     console.log('team 1:' + this.team1);
     console.log('team 2:' + this.team2);
