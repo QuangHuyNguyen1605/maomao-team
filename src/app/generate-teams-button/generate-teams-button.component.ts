@@ -7,6 +7,7 @@ import { Member, members } from '../members';
   styleUrls: ['./generate-teams-button.component.css']
 })
 export class GenerateTeamsButtonComponent implements OnInit {
+  members = members;
   team1: Member[] = [];
   team2: Member[] = [];
   constructor() {}
@@ -14,24 +15,30 @@ export class GenerateTeamsButtonComponent implements OnInit {
   ngOnInit() {}
 
   onClick() {
-    while (members.length > 0) {
-      const randomId = Math.floor(Math.random() * members.length) + 1;
+    console.log("before " + members.length);
+    for (let counter: number = 0; counter < 11; counter++) {
+      const randomId = Math.floor(Math.random() * (11 - counter)) + 1;
+      console.log("randomMem " + this.members[randomId]?.firstName);
       if (this.team1.length <= 5) {
-        let numOfFemale = this.team1.filter(mem => mem.gender === 'female')
+        let numOfFemale = this.team1.filter(mem => mem?.gender === 'female')
           .length;
-        if (members[randomId].gender === 'female' && numOfFemale > 3) {
-          this.team2.push(members[randomId]);
+        if (this.members[randomId]?.gender === 'female' && numOfFemale > 2) {
+          this.team2.push(this.members[randomId]);
         } else {
-          this.team1.push(members[randomId]);
+          this.team1.push(this.members[randomId]);
         }
+      } else {
+        this.team2.push(this.members[randomId]);
       }
-      members.forEach((mem, idx) => {
-        if (mem.id === randomId) {
-          members.splice(idx, 1);
-        }
+      this.members = this.members.filter(mem => {
+        //console.log(mem.id)
+        return mem.id !== this.members[randomId]?.id;
       });
+      
+      //console.log("after " + members.length);
     }
-    console.log('team 1:' + this.team1);
-    console.log('team 2:' + this.team2);
+    console.log(this.members.length);
+    this.team1.forEach((mem) => console.log(mem?.firstName));
+    this.team2.forEach((mem) => console.log(mem?.firstName));
   }
 }
