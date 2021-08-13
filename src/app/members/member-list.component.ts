@@ -4,13 +4,35 @@ import { Member, members } from '../members';
 @Component({
   selector: 'member-list',
   template: `
-    <button (click)="onClick()">Generate 2 teams</button>
-    <h1>Hello Team1!</h1>
-    <member-details *ngFor="let mem of team1" [member]="mem"></member-details>
+    <button class="btn btn-primary" (click)="onClick()" [disabled]="hasGenerated">Generate 2 teams</button>
+    <p>
+    <div *ngIf="hasGenerated">
+      <h2>Hello Team1</h2>
+      <ul class="list-group" *ngFor="let mem of team1">
+        <li class="list-group-item">
+          <member-details [member]="mem" (select)="onSelected($event)"></member-details>
+        </li>
+      </ul>
+    </div> 
     <br>
-    <h1>Hello Team2!</h1>
-    <member-details *ngFor="let mem of team2" [member]="mem"></member-details>
+    <div *ngIf="hasGenerated">
+      <h2>Hello Team2</h2>
+      <ul class="list-group" *ngFor="let mem of team2">
+        <li class="list-group-item">
+          <member-details [member]="mem" (select)="onSelected($event)"></member-details>
+        </li>
+      </ul>
+    </div>
     <br>
+    <div>
+      <p class="fst-normal">
+        Current selected member: {{ currentMember?.lastName }} {{ currentMember?.firstName }}
+        <br>
+        Age: {{ currentMember?.age }}
+        <br>
+        Gender: {{ currentMember?.gender }}
+      </p>
+    </div>
   `,
   styles: [
     `
@@ -21,6 +43,8 @@ import { Member, members } from '../members';
   ]
 })
 export class MemberListComponent {
+  hasGenerated: boolean = false;
+  currentMember: Member;
   members = members;
   team1: Member[] = [];
   team2: Member[] = [];
@@ -45,15 +69,17 @@ export class MemberListComponent {
         this.team2.push(this.members[randomId]);
       }
       this.members = this.members.filter(mem => {
-        //console.log(mem.id)
         return mem.id !== this.members[randomId]?.id;
       });
-      
-      //console.log("after " + members.length);
+      this.hasGenerated = true;
     }
-    console.log(this.members.length);
-    this.team1.forEach((mem) => console.log(mem?.firstName));
-    console.log("---------------------");
-    this.team2.forEach((mem) => console.log(mem?.firstName));
+    //console.log(this.members.length);
+    //this.team1.forEach((mem) => console.log(mem?.firstName));
+    //console.log("---------------------");
+    //this.team2.forEach((mem) => console.log(mem?.firstName));
+  }
+
+  onSelected(selectedMember: Member) {
+    this.currentMember = selectedMember;
   }
 }
